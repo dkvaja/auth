@@ -11,9 +11,17 @@ import React, { useState } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm, Controller } from 'react-hook-form'
+import { useForm } from "react-hook-form";
+
+
 
 export default function Login() {
   const classes = useStyles();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const history = useHistory();
   const [logInData, setLoginData] = useState({
     userName: "",
@@ -41,6 +49,7 @@ export default function Login() {
   const { register, handleSubmit, control, errors } = useForm();
   const onSubmit = (data) => console.log(data);
   console.log(errors);
+  const onSubmit = () => {};
 
   const { userName, password } = logInData;
   return (
@@ -50,6 +59,10 @@ export default function Login() {
         className={classes.loginContainer}
         justifyContent="center"
       >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input {...register("firstName")} />
+          <input type="submit" />
+        </form>
         <Grid item lg={4} md={4} sm={12} className={classes.loginForm}>
           <Grid container flexDirection="column" alignItems="center">
             <Typography variant="h4" align="center">
