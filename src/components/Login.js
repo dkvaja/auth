@@ -61,16 +61,28 @@ export default function Login() {
             <Grid container spacing={2} mt={1} justifyContent="center">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
+                  placeholder="Enter Your First Name"
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  // className={classes.inputField}
+                  name="firstName"
+                  inputRef={register({
+                    required: "First Name is required.",
+                  })}
+                  error={Boolean(errors.firstName)}
+                  helperText={errors.firstName?.message}
+                />
+                <TextField
                   id="outlined-basic1"
                   type="email"
                   // value={userName}
                   name={userName}
-                  error={Boolean(errors.userName)}
                   helperText={errors.userName?.message}
                   inputRef={register({
-                    required: "First Name is required.",
+                    required: "username is required.",
                   })}
-                  placeholder="Username"
+                  placeholder="Enter your username"
                   variant="outlined"
                   // onChange={(e) =>
                   //   setLoginData({
@@ -78,13 +90,14 @@ export default function Login() {
                   //     userName: e.target.value,
                   //   })
                   // }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PersonOutlineIcon />
-                      </InputAdornment>
-                    ),
-                  }}
+                  error={Boolean(errors.userName)}
+                // InputProps={{
+                //   startAdornment: (
+                //     <InputAdornment position="start">
+                //       <PersonOutlineIcon />
+                //     </InputAdornment>
+                //   ),
+                // }}
                 />
 
                 <TextField
@@ -112,7 +125,7 @@ export default function Login() {
                   variant="contained"
                   // onClick={handleLogin}
                   type={"submit"}
-                  // disabled={!userName || !password}
+                // disabled={!userName || !password}
                 >
                   Log In
                 </Button>
