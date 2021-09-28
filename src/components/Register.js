@@ -70,7 +70,7 @@ export default function Register() {
         className={classes.loginContainer}
         justifyContent="center"
       >
-        <Grid item lg={8} md={8} sm={12} className={classes.sideNav}>
+        <Grid item lg={8} md={8} xs={12} sm={12} className={classes.sideNav}>
           <Grid
             container
             height="100%"
@@ -82,12 +82,12 @@ export default function Register() {
               Have you already an account?
             </Typography>
             <Button variant="contained" component={Link} to={"/"}>
-              Log in
+              Log in Here
             </Button>
           </Grid>
         </Grid>
 
-        <Grid item lg={4} md={4} sm={12} className={classes.loginFormBox}>
+        <Grid item lg={4} md={4} xs={12} sm={12} className={classes.loginFormBox}>
           <Grid container flexDirection="column" alignItems="center">
             <Typography variant="h4" align="center">
               Register
