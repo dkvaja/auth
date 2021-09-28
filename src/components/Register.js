@@ -1,225 +1,167 @@
-import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  InputAdornment,
-} from "@mui/material";
-import { Link, withRouter } from "react-router-dom";
-import React, { Component } from "react";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { withStyles } from "@mui/styles";
+import React, { useState } from "react";
+import { Grid, Typography, Button } from "@mui/material";
+import { Link, useHistory } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+import { Input } from "../Styles/styledComponents";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "./ErrorMessage";
 
+export default function Register() {
+  const classes = useStyles();
+  const history = useHistory();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-const styles = (theme) => ({
+  const handleRegister = (data) => {
+    localStorage.setItem("user", JSON.stringify(data));
+    history.push("/");
+  };
+
+  return (
+    <>
+      <Grid
+        container
+        className={classes.loginContainer}
+        justifyContent="center"
+      >
+        <Grid item lg={8} md={8} sm={12} className={classes.sideNav}>
+          <Grid
+            container
+            height="100%"
+            justifyContent="center"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Typography variant="body1" color="#fff" gutterBottom>
+              Have you already an account?
+            </Typography>
+            <Button variant="contained" component={Link} to={"/"}>
+              Log in
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Grid item lg={4} md={4} sm={12} className={classes.loginFormBox}>
+          <Grid container flexDirection="column" alignItems="center">
+            <Typography variant="h4" align="center">
+              Register
+            </Typography>
+            <Typography variant="body1" align="center" gutterBottom>
+              Enter your details to create account
+            </Typography>
+            <Grid container spacing={2} mt={1} justifyContent="center">
+              <form
+                onSubmit={handleSubmit(handleRegister)}
+                className={classes.form}
+              >
+                <Input
+                  placeholder="Name"
+                  type="text"
+                  {...register("name", {
+                    required: {
+                      value: true,
+                      message: "Name is required",
+                    },
+                  })}
+                  autoComplete="off"
+                />
+                {errors.name && <ErrorMessage message={errors.name.message} />}
+
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  {...register("email", {
+                    required: {
+                      value: true,
+                      message: "Email is required",
+                    },
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Please Enter Valid Email Address",
+                    },
+                  })}
+                  autoComplete="off"
+                />
+                {errors.email && (
+                  <ErrorMessage message={errors.email.message} />
+                )}
+
+                <Input
+                  placeholder="Phone Number"
+                  type="tel"
+                  {...register("phoneNumber", {
+                    required: {
+                      value: true,
+                      message: "Phone number is required",
+                    },
+                    pattern: {
+                      value:
+                        /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im,
+                      message: "Please Enter Valid Phone number",
+                    },
+                  })}
+                  autoComplete="off"
+                />
+                {errors.phoneNumber && (
+                  <ErrorMessage message={errors.phoneNumber.message} />
+                )}
+
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  {...register("password", {
+                    required: {
+                      value: true,
+                      message: "Password is required",
+                    },
+                  })}
+                />
+                {errors.password && (
+                  <ErrorMessage message={errors.password.message} />
+                )}
+
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: "100%",
+                  }}
+                  type="submit"
+                >
+                  Register
+                </Button>
+              </form>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </>
+  );
+}
+
+const useStyles = makeStyles((theme) => ({
   loginContainer: {
     height: "100vh",
     width: "100vw",
     display: "flex",
     flexDirection: "row",
   },
-  loginForm: {
+  loginFormBox: {
     padding: theme.spacing(5),
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
   },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    width: "80%",
+  },
   sideNav: {
     background:
       "linear-gradient(90deg, rgba(21,166,252,1) 35%, rgba(0,212,255,1) 100%)",
   },
-});
-
-class Register extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: "",
-      email: "",
-      phoneNumber: "",
-      password: "",
-    };
-  }
-  handleDataChange = (e, name) => {
-    this.setState({
-      ...this.state,
-      [name]: e.target.value,
-    });
-  };
-
-  validateFormData = () => {
-    let userData = this.state;
-    let error = "";
-    let isValid = true;
-
-    if (localStorage.getItem("user")) {
-      const { email } = JSON.parse(localStorage.getItem("user"));
-      if (userData.email === email) {
-        error = "User Already Registered";
-        alert('User Already Registered');
-        isValid = false;
-      }
-    }
-
-    if (!!userData.email) {
-      var pattern = new RegExp(
-        /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
-      );
-      if (!pattern.test(userData.email)) {
-        isValid = false;
-        error = "Please enter valid email";
-      }
-    }
-
-    if (!!userData.phoneNumber) {
-      if (!userData.phoneNumber.match(/^[0-9]{10}$/)) {
-        isValid = false;
-        error = "Please Enter valid Phone Number";
-      }
-    }
-  };
-  
-  handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(this.state));
-    const { history } = this.props;
-    history.push("/");
-  };
-
-  render() {
-    const { classes } = this.props;
-    const { name, email, phoneNumber, password } = this.state;
-    console.log();
-    return (
-      <>
-        <Grid
-          container
-          className={classes.loginContainer}
-          justifyContent="center"
-        >
-          <Grid item lg={8} md={8} sm={12} className={classes.sideNav}>
-            <Grid
-              container
-              height="100%"
-              justifyContent="center"
-              flexDirection="column"
-              alignItems="center"
-            >
-              <Typography variant="body1" color="#fff" gutterBottom>
-                Have you already an account?
-              </Typography>
-              <Button variant="contained" component={Link} to={"/"}>
-                Log in
-              </Button>
-            </Grid>
-          </Grid>
-
-          <Grid item lg={4} md={4} sm={12} className={classes.loginForm}>
-            <Grid container flexDirection="column" alignItems="center">
-              <Typography variant="h4" align="center">
-                Register
-              </Typography>
-              <Typography variant="body1" align="center" gutterBottom>
-                Enter your details to create account
-              </Typography>
-              <Grid container spacing={2} mt={1} justifyContent="center">
-                <Grid item>
-                  <TextField
-                    id="outlined-basic1"
-                    type="text"
-                    value={name}
-                    onChange={(e) => {
-                      this.handleDataChange(e, "name");
-                    }}
-                    placeholder="Name"
-                    variant="outlined"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    id="outlined-basic2"
-                    type="email"
-                    required
-                    value={email}
-                    placeholder="Email"
-                    variant="outlined"
-                    onChange={(e) => {
-                      this.handleDataChange(e, "email");
-                    }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <MailOutlineIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    id="outlined-basic3"
-                    type="tel"
-                    value={phoneNumber}
-                    placeholder="Phone Number"
-                    variant="outlined"
-                    onChange={(e) => {
-                      this.handleDataChange(e, "phoneNumber");
-                    }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <CallOutlinedIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    type="password"
-                    value={password}
-                    id="outlined-basic4"
-                    placeholder="Password"
-                    variant="outlined"
-                    onChange={(e) => {
-                      this.handleDataChange(e, "password");
-                    }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockOutlinedIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    onClick={this.handleSubmit}
-                    disabled={!name || !email || !phoneNumber || !password}
-                  >
-                    Register
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </>
-    );
-  }
-}
-
-export default withRouter(withStyles(styles, { withTheme: true })(Register));
+}));

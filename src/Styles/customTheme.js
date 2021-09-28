@@ -1,5 +1,3 @@
 import { createTheme } from "@mui/material";
 
-export const customTheme = createTheme({
-    
-});
+export const customTheme = createTheme();

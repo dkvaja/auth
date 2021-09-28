@@ -1,39 +1,27 @@
-import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  InputAdornment,
-} from "@mui/material";
+import { Grid, Typography, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, useHistory } from "react-router-dom";
 import React, { useState } from "react";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useForm, Controller } from 'react-hook-form'
 import { useForm } from "react-hook-form";
-
-
+import ErrorMessage from "./ErrorMessage";
+import { Input } from "../Styles/styledComponents";
 
 export default function Login() {
+  const [userError, setUserError] = useState("");
   const classes = useStyles();
+  const history = useHistory();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const history = useHistory();
-  const [logInData, setLoginData] = useState({
-    userName: "",
-    password: "",
-  });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!!logInData.userName && !!logInData.password) {
+  const handleLogin = (data) => {
+    if (!!data.userName && !!data.password) {
       if (!!localStorage.getItem("user")) {
         const { email, password } = JSON.parse(localStorage.getItem("user"));
-        if (logInData.userName === email && logInData.password === password) {
+        if (data.userName === email && data.password === password) {
           localStorage.setItem(
             "isUserAuthenticated",
             JSON.stringify({
@@ -41,17 +29,15 @@ export default function Login() {
             })
           );
           history.push("/dashboard");
+        } else {
+          setUserError("Credentials does not match");
         }
+      } else {
+        setUserError("User Not Found");
       }
     }
   };
 
-  const { register, handleSubmit, control, errors } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
-  const onSubmit = () => {};
-
-  const { userName, password } = logInData;
   return (
     <>
       <Grid
@@ -59,86 +45,64 @@ export default function Login() {
         className={classes.loginContainer}
         justifyContent="center"
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input {...register("firstName")} />
-          <input type="submit" />
-        </form>
-        <Grid item lg={4} md={4} sm={12} className={classes.loginForm}>
+        <Grid item lg={4} md={4} sm={12} className={classes.loginFormBox}>
           <Grid container flexDirection="column" alignItems="center">
             <Typography variant="h4" align="center">
               Log in
             </Typography>
+
             <Typography variant="body1" align="center" gutterBottom>
               Enter your credentials to Login
             </Typography>
-            <Grid container spacing={2} mt={1} justifyContent="center">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField
-                  placeholder="Enter Your First Name"
-                  label="First Name"
-                  variant="outlined"
-                  fullWidth
-                  // className={classes.inputField}
-                  name="firstName"
-                  inputRef={register({
-                    required: "First Name is required.",
-                  })}
-                  error={Boolean(errors.firstName)}
-                  helperText={errors.firstName?.message}
-                />
-                <TextField
-                  id="outlined-basic1"
+
+            <Grid container mt={1} justifyContent="center">
+              {userError && <ErrorMessage message={userError} />}
+
+              <form
+                onSubmit={handleSubmit(handleLogin)}
+                className={classes.form}
+              >
+                <Input
+                  placeholder="Username"
                   type="email"
-                  // value={userName}
-                  name={userName}
-                  helperText={errors.userName?.message}
-                  inputRef={register({
-                    required: "username is required.",
+                  {...register("userName", {
+                    required: {
+                      value: true,
+                      message: "Username is required",
+                    },
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Please Enter Valid Email Address",
+                    },
                   })}
-                  placeholder="Enter your username"
-                  variant="outlined"
-                  // onChange={(e) =>
-                  //   setLoginData({
-                  //     ...logInData,
-                  //     userName: e.target.value,
-                  //   })
-                  // }
-                  error={Boolean(errors.userName)}
-                // InputProps={{
-                //   startAdornment: (
-                //     <InputAdornment position="start">
-                //       <PersonOutlineIcon />
-                //     </InputAdornment>
-                //   ),
-                // }}
+                  autoComplete="off"
                 />
 
-                <TextField
-                  type="password"
-                  id="outlined-basic"
+                {errors.userName && (
+                  <ErrorMessage message={errors.userName.message} />
+                )}
+
+                <Input
                   placeholder="Password"
-                  variant="outlined"
-                  value={password}
-                  onChange={(e) =>
-                    setLoginData({
-                      ...logInData,
-                      password: e.target.value,
-                    })
-                  }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LockOutlinedIcon />
-                      </InputAdornment>
-                    ),
-                  }}
+                  type="password"
+                  {...register("password", {
+                    required: {
+                      value: true,
+                      message: "Password can't not be blank",
+                    },
+                  })}
                 />
+
+                {errors.password && (
+                  <ErrorMessage message={errors.password.message} />
+                )}
 
                 <Button
                   variant="contained"
-                  // onClick={handleLogin}
                   type={"submit"}
-                // disabled={!userName || !password}
+                  sx={{
+                    width: "100%",
+                  }}
                 >
                   Log In
                 </Button>
@@ -174,12 +138,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
   },
-  loginForm: {
+  loginFormBox: {
     padding: theme.spacing(5),
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    width: "80%",
   },
   sideNav: {
     background:
