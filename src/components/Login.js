@@ -10,6 +10,7 @@ import { Link, useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useForm, Controller } from 'react-hook-form'
 
 export default function Login() {
   const classes = useStyles();
@@ -37,6 +38,10 @@ export default function Login() {
     }
   };
 
+  const { register, handleSubmit, control, errors } = useForm();
+  const onSubmit = (data) => console.log(data);
+  console.log(errors);
+
   const { userName, password } = logInData;
   return (
     <>
@@ -54,19 +59,25 @@ export default function Login() {
               Enter your credentials to Login
             </Typography>
             <Grid container spacing={2} mt={1} justifyContent="center">
-              <Grid item>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                   id="outlined-basic1"
                   type="email"
-                  value={userName}
+                  // value={userName}
+                  name={userName}
+                  error={Boolean(errors.userName)}
+                  helperText={errors.userName?.message}
+                  inputRef={register({
+                    required: "First Name is required.",
+                  })}
                   placeholder="Username"
                   variant="outlined"
-                  onChange={(e) =>
-                    setLoginData({
-                      ...logInData,
-                      userName: e.target.value,
-                    })
-                  }
+                  // onChange={(e) =>
+                  //   setLoginData({
+                  //     ...logInData,
+                  //     userName: e.target.value,
+                  //   })
+                  // }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -75,8 +86,7 @@ export default function Login() {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item>
+
                 <TextField
                   type="password"
                   id="outlined-basic"
@@ -97,17 +107,16 @@ export default function Login() {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid item>
+
                 <Button
                   variant="contained"
-                  onClick={handleLogin}
+                  // onClick={handleLogin}
                   type={"submit"}
-                  disabled={!userName || !password}
+                  // disabled={!userName || !password}
                 >
                   Log In
                 </Button>
-              </Grid>
+              </form>
             </Grid>
           </Grid>
         </Grid>
