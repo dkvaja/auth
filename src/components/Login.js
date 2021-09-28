@@ -28,7 +28,7 @@ export default function Login() {
               isUserAuthenticated: true,
             })
           );
-          history.push("/dashboard");
+          history.push({ pathname: '/dashboard', state: data });
         } else {
           setUserError("Credentials does not match");
         }
@@ -61,6 +61,7 @@ export default function Login() {
               <form
                 onSubmit={handleSubmit(handleLogin)}
                 className={classes.form}
+                autocomplete="off"
               >
                 <Input
                   placeholder="Username"
@@ -122,7 +123,7 @@ export default function Login() {
               Don't have an account?
             </Typography>
             <Button variant="contained" component={Link} to={"/register"}>
-              Register
+              Register Here
             </Button>
           </Grid>
         </Grid>

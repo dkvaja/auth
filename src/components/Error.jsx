@@ -5,7 +5,7 @@ export default function Error() {
   return (
     <div>
       <Typography variant="h2" align="center">
-        Page Not Found
+        Sorry..Page Not Found
       </Typography>
     </div>
   );

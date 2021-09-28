@@ -1,11 +1,14 @@
 import { Button, Container, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import Drawer from "./DrawerBox";
 
-export default function Dashboard() {
+
+export default function Dashboard(props) {
   const { name } = JSON.parse(localStorage.getItem("user"));
   const history = useHistory();
+  const location = useLocation();
   const handleLogOut = () => {
     localStorage.clear();
     history.push('/');
@@ -21,13 +24,17 @@ export default function Dashboard() {
         }}
       >
         <Typography variant={"h3"} align="center">
-          Welcome to the auth {name}
+          Welcome to the auth {location.state?.userName}
+          {
+            console.log(location.state)
+          }
         </Typography>
         <Box m="0 auto">
           <Button variant="contained" onClick={handleLogOut}>
             Log Out
           </Button>
         </Box>
+        <Drawer />
       </Container>
     </>
   );

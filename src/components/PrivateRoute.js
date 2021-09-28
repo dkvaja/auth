@@ -2,9 +2,9 @@ import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => {
-  const isUserAuthenticated = JSON.parse(
-    localStorage.getItem("isUserAuthenticated")
-  );
+  
+  const isUserAuthenticated = JSON.parse(localStorage.getItem("isUserAuthenticated"));
+  
   return (
     <Route
       {...rest}

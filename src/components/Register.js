@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 
 export default function Register() {
+  const [registerError, setRegisterError] = useState("");
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -16,8 +17,50 @@ export default function Register() {
   } = useForm();
 
   const handleRegister = (data) => {
-    localStorage.setItem("user", JSON.stringify(data));
-    history.push("/");
+    const { name, email, phoneNumber, password } = data;
+    if (localStorage.getItem('user')) {
+      const loggedInUser = JSON.parse(localStorage.getItem('user'));
+      loggedInUser.email === email && setRegisterError("User Already Registerd please use different mail");
+    }
+    else {
+      if (registerDataValidator(data)) {
+        const formatedUserData = {
+          name: name.trim(),
+          email,
+          phoneNumber,
+          password: password.trim(),
+        };
+        localStorage.setItem("user", JSON.stringify(formatedUserData));
+        history.push("/");
+      } else {
+        console.log("false");
+      }
+    }
+  };
+
+  const registerDataValidator = (data) => {
+    let isValid = true;
+    let error = "";
+    const { name, email, phoneNumber, password } = data;
+
+    if (name.trim() === "") {
+      isValid = false;
+      error = "Please Enter Valid Name";
+      setRegisterError(error);
+      return isValid;
+    }
+
+    else if (email.trim() === "") {
+      isValid = false;
+      error = "Please Enter valid email"
+      return isValid;
+    }
+    else if (password.trim() === "") {
+      isValid = false;
+      error = "Please Enter valid password"
+      return isValid;
+    }
+    return isValid;
   };
 
   return (
@@ -53,9 +96,11 @@ export default function Register() {
               Enter your details to create account
             </Typography>
             <Grid container spacing={2} mt={1} justifyContent="center">
+              {registerError && <ErrorMessage message={registerError} />}
               <form
                 onSubmit={handleSubmit(handleRegister)}
                 className={classes.form}
+                autocomplete="off"
               >
                 <Input
                   placeholder="Name"
@@ -65,6 +110,10 @@ export default function Register() {
                       value: true,
                       message: "Name is required",
                     },
+                    pattern: {
+                      value: /^[a-zA-z\s]+$/,
+                      message: 'Enter Valid Name'
+                    }
                   })}
                   autoComplete="off"
                 />
