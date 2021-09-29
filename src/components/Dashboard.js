@@ -1,12 +1,13 @@
+import React, { useState } from "react";
 import { Button, Container, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import Drawer from "./DrawerBox";
+import MenuAppBar from './AppBar';
 
 
-export default function Dashboard(props) {
-  const { name } = JSON.parse(localStorage.getItem("user"));
+export default function Dashboard() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const history = useHistory();
   const location = useLocation();
   const handleLogOut = () => {
@@ -15,27 +16,17 @@ export default function Dashboard(props) {
   };
   return (
     <>
-      <Container
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          minHeight: "100vh",
-        }}
-      >
+      <MenuAppBar setIsDrawerOpen={setIsDrawerOpen} open={isDrawerOpen} />
+      <Drawer >
         <Typography variant={"h3"} align="center">
           Welcome to the auth {location.state?.userName}
-          {
-            console.log(location.state)
-          }
         </Typography>
         <Box m="0 auto">
           <Button variant="contained" onClick={handleLogOut}>
             Log Out
           </Button>
         </Box>
-        <Drawer />
-      </Container>
+      </Drawer>
     </>
   );
 }

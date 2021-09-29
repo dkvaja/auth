@@ -11,18 +11,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import MenuAppBar from './AppBar';
-
 
 const drawerWidth = 220;
 
 export default function DrawerBox() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <MenuAppBar setIsDrawerOpen={setIsDrawerOpen} open={isDrawerOpen} />
+      
       <Drawer
         variant="permanent"
         sx={{
@@ -58,6 +54,7 @@ export default function DrawerBox() {
         </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      asdjsadsadjkaskdsjdhkdasjkdhakdhkdhksh
       </Box>
     </Box>
   );
